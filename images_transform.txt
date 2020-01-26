@@ -1,0 +1,126 @@
+---------------save as pngs--------
+from PIL import Image
+import os
+
+for f in os.listdir("c:/images"):
+    if f.endswith(".jpg"):
+        i = Image.open("c:/images/"+f)
+        fn, fext = os.path.splitext(f)
+        i.save('c:/images/pngs/{}.png'.format(fn))
+        print(f)
+		
+	
+-----------change size 300,300---------
+from PIL import Image
+import os
+
+size_300 = (300,300)
+for f in os.listdir("c:/images"):
+    if f.endswith(".jpg"):
+        i = Image.open("c:/images/"+f)
+        fn, fext = os.path.splitext(f)
+        i.thumbnail(size_300)
+        i.save('c:/images/300/{}_300.png'.format(fn))
+        print(f)
+		
+-----------save as black-white-----------
+
+from PIL import Image
+import os
+
+image1 = Image.open("c:/images/before.jpg")
+image1.convert(mode = "L").save("c:/images/before.png")
+
+--------------Add blur------------
+from PIL import Image, ImageFilter
+import os
+
+image1 = Image.open("c:/images/before.jpg")
+image1.filter(ImageFilter.GaussianBlur()).save("c:/images/before.png")
+
+-------------Add More blur------
+from PIL import Image, ImageFilter
+import os
+
+image1 = Image.open("c:/images/before.jpg")
+image1.filter(ImageFilter.GaussianBlur(15)).save("c:/images/before.png")
+
+---------------read exception------
+
+import os, sys
+import Image
+
+size = 128, 128
+
+for infile in sys.argv[1:]:
+    outfile = os.path.splitext(infile)[0] + ".thumbnail"
+    if infile != outfile:
+        try:
+            im = Image.open(infile)
+            im.thumbnail(size, Image.ANTIALIAS)
+            im.save(outfile, "JPEG")
+        except IOError:
+            print "cannot create thumbnail for '%s'" % infile
+
+------------one example------------------
+from PIL import Image, ImageFilter
+import os
+
+size = (500,500)
+image = Image.open("c:/images/before.jpg")
+
+
+width  = image.size[0]
+height = image.size[1]
+
+aspect = width / float(height)
+
+ideal_width = 200
+ideal_height = 200
+
+ideal_aspect = ideal_width / float(ideal_height)
+
+if aspect > ideal_aspect:
+    # Then crop the left and right edges:
+    new_width = int(ideal_aspect * height)
+    offset = (width - new_width) / 2
+    resize = (offset, 0, width - offset, height)
+else:
+    # ... crop the top and bottom:
+    new_height = int(width / ideal_aspect)
+    offset = (height - new_height) / 2
+    resize = (0, offset, width, height - offset)
+
+thumb = image.crop(resize).resize((ideal_width, ideal_height), Image.ANTIALIAS)
+thumb.save("c:/images/before2.jpg")
+--------------------image as numpy array----------------------------
+
+def resize_image(numpy_array_image, new_height):
+    # convert nympy array image to PIL.Image
+    image = Image.fromarray(numpy.uint8(numpy_array_image))
+    old_width = float(image.size[0])
+    old_height = float(image.size[1])
+    ratio = float( new_height / old_height)
+    new_width = int(old_width * ratio)
+    image = image.resize((new_width, new_height), PIL.Image.ANTIALIAS)
+    # convert PIL.Image into nympy array back again
+    return array(image)
+	
+---------------------array---------------------------
+import numpy
+import PIL
+
+img = PIL.Image.open("foo.jpg").convert("L")
+imgarr = numpy.array(img) 
+
+------------------------------------------------
+from PIL import Image
+
+im = Image.open('dead_parrot.jpg') # Can be many different formats.
+pix = im.load()
+print im.size  # Get the width and hight of the image for iterating over
+print pix[x,y]  # Get the RGBA Value of the a pixel of an image
+pix[x,y] = value  # Set the RGBA Value of the image (tuple)
+im.save('alive_parrot.png')  # Save the modified pixels as .png
+
+-------------------------------------------------
